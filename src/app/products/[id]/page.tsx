@@ -6,11 +6,50 @@ type ProductPageProps = {
   }>;
 };
 
+const products: Record<
+  string,
+  {
+    title: string;
+    price: string;
+    image: string;
+  }
+> = {
+  "oversized-hoodie": {
+    title: "Oversized Hoodie",
+    price: "$59",
+    image: "/images/hoodie.jpg",
+  },
+
+  "classic-jacket": {
+    title: "Classic Jacket",
+    price: "$89",
+    image: "/images/jacket.jpg",
+  },
+
+  "urban-t-shirt": {
+    title: "Urban T-Shirt",
+    price: "$39",
+    image: "/images/tshirt.jpg",
+  },
+};
+
 export default async function ProductPage({
   params,
 }: ProductPageProps) {
 
   const { id } = await params;
+
+  const product = products[id];
+
+  if (!product) {
+    return (
+      <main className="min-h-screen bg-black text-white flex items-center justify-center">
+        <h1 className="text-4xl font-bold">
+          Product Not Found
+        </h1>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-black text-white px-6 py-12">
@@ -21,8 +60,8 @@ export default async function ProductPage({
         <div className="relative h-[500px] rounded-3xl overflow-hidden">
 
           <Image
-            src="/images/hoodie.jpg"
-            alt={id}
+            src={product.image}
+            alt={product.title}
             fill
             className="object-cover"
           />
@@ -36,12 +75,12 @@ export default async function ProductPage({
             Premium Collection
           </p>
 
-          <h1 className="text-5xl font-bold mb-6 capitalize">
-            {id}
+          <h1 className="text-5xl font-bold mb-6">
+            {product.title}
           </h1>
 
           <p className="text-3xl font-semibold mb-6">
-            $59
+            {product.price}
           </p>
 
           <p className="text-gray-300 leading-relaxed mb-8">
