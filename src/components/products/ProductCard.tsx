@@ -1,16 +1,29 @@
+import Image from "next/image";
+
 type ProductCardProps = {
   title: string;
   price: string;
+  image: string;
 };
 
 export default function ProductCard({
   title,
   price,
+  image,
 }: ProductCardProps) {
   return (
-    <div className="bg-zinc-900 rounded-2xl overflow-hidden hover:scale-105 transition duration-300">
+    <div className="bg-zinc-900 rounded-2xl overflow-hidden hover:scale-105 transition duration-300 group">
 
-      <div className="h-72 bg-zinc-800"></div>
+      <div className="relative h-72 overflow-hidden">
+
+        <Image
+          src={image}
+          alt={title}
+          fill
+          className="object-cover group-hover:scale-110 transition duration-500"
+        />
+
+      </div>
 
       <div className="p-5">
 

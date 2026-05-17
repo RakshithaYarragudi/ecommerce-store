@@ -36,16 +36,19 @@ export default function Home() {
           <ProductCard
             title="Oversized Hoodie"
             price="$59"
+            image="/images/hoodie.jpg"
           />
 
           <ProductCard
             title="Classic Jacket"
             price="$89"
+            image="/images/jacket.jpg"
           />
 
           <ProductCard
             title="Urban T-Shirt"
             price="$39"
+            image="/images/tshirt.jpg"
           />
 
         </div>
