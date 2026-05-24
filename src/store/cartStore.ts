@@ -1,3 +1,5 @@
+"use client";
+
 import { create } from "zustand";
 
 import { persist } from "zustand/middleware";
@@ -14,7 +16,7 @@ type CartStore = {
   cart: CartItem[];
 
   addToCart: (
-    item: Omit<CartItem, "quantity">
+    item: CartItem
   ) => void;
 
   removeFromCart: (
@@ -28,108 +30,114 @@ type CartStore = {
   decreaseQuantity: (
     id: string
   ) => void;
+
+  clearCart: () => void;
 };
 
 export const useCartStore =
   create<CartStore>()(
     persist(
-      (set, get) => ({
+      (set) => ({
 
         cart: [],
 
-        addToCart: (item) => {
+        addToCart: (item) =>
+          set((state) => {
 
-          const existingItem =
-            get().cart.find(
-              (cartItem) =>
-                cartItem.id === item.id
-            );
-
-          if (existingItem) {
-
-            set({
-              cart: get().cart.map(
+            const existingItem =
+              state.cart.find(
                 (cartItem) =>
-
                   cartItem.id === item.id
-                    ? {
-                        ...cartItem,
-                        quantity:
-                          cartItem.quantity + 1,
-                      }
-                    : cartItem
-              ),
-            });
+              );
 
-          } else {
+            if (existingItem) {
 
-            set({
+              return {
+
+                cart:
+                  state.cart.map(
+                    (cartItem) =>
+
+                      cartItem.id === item.id
+                        ? {
+                            ...cartItem,
+                            quantity:
+                              cartItem.quantity + 1,
+                          }
+                        : cartItem
+                  ),
+
+              };
+
+            }
+
+            return {
+
               cart: [
-                ...get().cart,
-                {
-                  ...item,
-                  quantity: 1,
-                },
+                ...state.cart,
+                item,
               ],
-            });
 
-          }
+            };
 
-        },
+          }),
 
-        removeFromCart: (id) => {
+        removeFromCart: (id) =>
+          set((state) => ({
 
-          set({
-            cart: get().cart.filter(
-              (item) =>
-                item.id !== id
-            ),
-          });
-
-        },
-
-        increaseQuantity: (id) => {
-
-          set({
-            cart: get().cart.map(
-              (item) =>
-
-                item.id === id
-                  ? {
-                      ...item,
-                      quantity:
-                        item.quantity + 1,
-                    }
-                  : item
-            ),
-          });
-
-        },
-
-        decreaseQuantity: (id) => {
-
-          set({
-            cart: get().cart
-              .map((item) =>
-
-                item.id === id
-                  ? {
-                      ...item,
-                      quantity:
-                        item.quantity - 1,
-                    }
-                  : item
-              )
-              .filter(
+            cart:
+              state.cart.filter(
                 (item) =>
-                  item.quantity > 0
+                  item.id !== id
               ),
-          });
 
-        },
+          })),
+
+        increaseQuantity: (id) =>
+          set((state) => ({
+
+            cart:
+              state.cart.map(
+                (item) =>
+
+                  item.id === id
+                    ? {
+                        ...item,
+                        quantity:
+                          item.quantity + 1,
+                      }
+                    : item
+              ),
+
+          })),
+
+        decreaseQuantity: (id) =>
+          set((state) => ({
+
+            cart:
+              state.cart.map(
+                (item) =>
+
+                  item.id === id
+                    ? {
+                        ...item,
+                        quantity:
+                          Math.max(
+                            1,
+                            item.quantity - 1
+                          ),
+                      }
+                    : item
+              ),
+
+          })),
+
+        clearCart: () =>
+          set({
+            cart: [],
+          }),
 
       }),
-
       {
         name: "cart-storage",
       }

@@ -1,248 +1,178 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
-import { useParams } from "next/navigation";
+import { use, useState } from "react";
 
-import { useCartStore } from "@/store/cartStore";
+import { notFound } from "next/navigation";
+
+import toast from "react-hot-toast";
+
 import { products } from "@/data/products";
 
-export default function ProductPage() {
+import { useCartStore } from "@/store/cartStore";
 
-  const params = useParams();
+import { useWishlistStore } from "@/store/wishlistStore";
 
-  const id = params.id as string;
+export default function ProductPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+
+  const { id } = use(params);
 
   const product = products.find(
     (item) => item.id === id
   );
 
+  const addToCart =
+    useCartStore(
+      (state) => state.addToCart
+    );
+
+  const addToWishlist =
+    useWishlistStore(
+      (state) =>
+        state.addToWishlist
+    );
+
   const [selectedImage, setSelectedImage] =
-    useState(product?.images[0]);
-
-  const [selectedSize, setSelectedSize] =
-    useState("M");
-
-  const addToCart = useCartStore(
-    (state) => state.addToCart
-  );
+    useState(
+      product?.images?.[0]
+    );
 
   if (!product) {
 
-    return (
-      <main className="min-h-screen bg-black text-white flex items-center justify-center">
-        <h1 className="text-4xl font-bold">
-          Product Not Found
-        </h1>
-      </main>
-    );
+    return notFound();
 
   }
 
-  return (
-    <main className="min-h-screen bg-black text-white px-6 py-12">
+  const handleAddToCart = () => {
 
-      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16">
+    addToCart({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      image: product.images[0],
+      quantity: 1,
+    });
+
+    toast.success(
+      "Added to Cart"
+    );
+  };
+
+  const handleWishlist = () => {
+
+    addToWishlist({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      image: product.images[0],
+    });
+
+    toast.success(
+      "Added to Wishlist"
+    );
+  };
+
+  return (
+    <main className="min-h-screen bg-black text-white px-6 md:px-12 py-12">
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
 
         {/* LEFT SIDE */}
         <div>
 
           {/* MAIN IMAGE */}
-          <div className="relative h-[700px] rounded-3xl overflow-hidden mb-6">
-
-            <Image
-              src={selectedImage || product.images[0]}
-              alt={product.title}
-              fill
-              sizes="100vw"
-              className="object-cover"
-            />
-
-          </div>
+          <img
+            src={selectedImage}
+            alt={product.title}
+            className="w-full h-[400px] md:h-[850px] object-cover rounded-[40px]"
+          />
 
           {/* THUMBNAILS */}
-          <div className="flex gap-4">
+          <div className="flex gap-4 mt-6 overflow-x-auto">
 
-            {product.images.map((image, index) => (
+            {product.images.map(
+              (image) => (
 
-              <button
-                key={index}
-                onClick={() =>
-                  setSelectedImage(image)
-                }
-                className={`relative w-28 h-28 rounded-2xl overflow-hidden border-2 transition ${
-                  selectedImage === image
-                    ? "border-white"
-                    : "border-zinc-800"
-                }`}
-              >
+                <button
+                  key={image}
+                  onClick={() =>
+                    setSelectedImage(image)
+                  }
+                  className={`border-4 rounded-3xl overflow-hidden flex-shrink-0 ${
+                    selectedImage === image
+                      ? "border-yellow-500"
+                      : "border-transparent"
+                  }`}
+                >
 
-                <Image
-                  src={image}
-                  alt={product.title}
-                  fill
-                  sizes="100vw"
-                  className="object-cover"
-                />
+                  <img
+                    src={image}
+                    alt={product.title}
+                    className="w-24 h-24 md:w-32 md:h-32 object-cover"
+                  />
 
-              </button>
+                </button>
 
-            ))}
+              )
+            )}
 
           </div>
 
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="flex flex-col">
+        <div className="flex flex-col justify-center">
 
-          <p className="text-gray-400 uppercase tracking-[5px] mb-4">
+          <p className="uppercase tracking-[10px] text-gray-400 mb-6 text-sm md:text-base">
 
             Premium Collection
 
           </p>
 
-          <h1 className="text-6xl font-bold mb-6">
+          <h1 className="text-4xl md:text-7xl font-bold mb-8 leading-tight">
 
             {product.title}
 
           </h1>
 
-          <p className="text-4xl font-semibold mb-6">
+          <p className="text-3xl md:text-5xl font-bold mb-8">
 
             {product.price}
 
           </p>
 
-          {/* RATING */}
-          <div className="flex items-center gap-3 mb-8">
+          <p className="text-lg md:text-2xl text-gray-300 leading-relaxed mb-12">
 
-            <span className="text-yellow-400 text-2xl">
-              ★
-            </span>
-
-            <span className="text-xl font-semibold">
-              {product.rating}
-            </span>
-
-          </div>
-
-          {/* SIZE SELECTOR */}
-          <div className="mb-10">
-
-            <h2 className="text-xl font-semibold mb-4">
-
-              Select Size
-
-            </h2>
-
-            <div className="flex gap-4">
-
-              {["S", "M", "L", "XL"].map((size) => (
-
-                <button
-                  key={size}
-                  onClick={() =>
-                    setSelectedSize(size)
-                  }
-                  className={`w-14 h-14 rounded-full border transition ${
-                    selectedSize === size
-                      ? "bg-white text-black border-white"
-                      : "border-zinc-700 hover:border-white"
-                  }`}
-                >
-
-                  {size}
-
-                </button>
-
-              ))}
-
-            </div>
-
-          </div>
-
-          {/* DESCRIPTION */}
-          <p className="text-gray-300 text-lg leading-relaxed mb-10">
-
-            Premium oversized streetwear crafted for modern fashion lovers. Built with comfort, luxury, and timeless style.
+            Premium oversized fashion designed
+            for modern streetwear lovers.
+            Crafted with comfort, luxury,
+            and timeless aesthetics.
 
           </p>
 
-          {/* ADD TO CART */}
-          <button
-            onClick={() =>
-              addToCart({
-                id: product.id,
-                title: product.title,
-                price: product.price,
-                image: product.images[0],
-              })
-            }
-            className="bg-white text-black px-10 py-5 rounded-full text-lg font-semibold hover:bg-gray-200 transition w-fit mb-16"
-          >
+          {/* BUTTONS */}
+          <div className="flex flex-col sm:flex-row gap-6">
 
-            Add To Cart
+            <button
+              onClick={handleAddToCart}
+              className="flex-1 bg-white text-black py-5 rounded-full text-xl md:text-2xl font-semibold hover:bg-gray-200 transition"
+            >
 
-          </button>
+              Add To Cart
 
-          {/* REVIEWS */}
-          <div>
+            </button>
 
-            <h2 className="text-3xl font-bold mb-8">
+            <button
+              onClick={handleWishlist}
+              className="flex-1 border border-white py-5 rounded-full text-xl md:text-2xl font-semibold hover:bg-white hover:text-black transition"
+            >
 
-              Customer Reviews
+              Wishlist
 
-            </h2>
-
-            <div className="flex flex-col gap-6">
-
-              {product.reviews.map(
-                (review, index) => (
-
-                  <div
-                    key={index}
-                    className="bg-zinc-900 p-6 rounded-2xl border border-zinc-800"
-                  >
-
-                    <div className="flex items-center gap-3 mb-4">
-
-                      <div className="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center font-bold">
-
-                        {review.user[0]}
-
-                      </div>
-
-                      <div>
-
-                        <h3 className="font-semibold text-lg">
-
-                          {review.user}
-
-                        </h3>
-
-                        <p className="text-yellow-400">
-
-                          ★★★★★
-
-                        </p>
-
-                      </div>
-
-                    </div>
-
-                    <p className="text-gray-300 leading-relaxed">
-
-                      {review.comment}
-
-                    </p>
-
-                  </div>
-
-                )
-              )}
-
-            </div>
+            </button>
 
           </div>
 

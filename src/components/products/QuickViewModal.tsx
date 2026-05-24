@@ -1,15 +1,10 @@
+
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
 
 type QuickViewModalProps = {
-  product: {
-    title: string;
-    price: string;
-    image: string;
-  };
-
+  product: any;
   onClose: () => void;
 };
 
@@ -18,23 +13,32 @@ export default function QuickViewModal({
   onClose,
 }: QuickViewModalProps) {
 
-  return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center px-6">
+  if (!product) return null;
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.3 }}
-        className="bg-zinc-900 rounded-3xl overflow-hidden max-w-4xl w-full grid md:grid-cols-2"
-      >
+  return (
+    <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-6">
+
+      {/* MODAL */}
+      <div className="bg-zinc-950 rounded-3xl overflow-hidden max-w-6xl w-full grid md:grid-cols-2 relative">
+
+        {/* CLOSE BUTTON */}
+        <button
+          onClick={onClose}
+          className="absolute top-6 right-6 text-white text-3xl z-20"
+        >
+
+          ✕
+
+        </button>
 
         {/* IMAGE */}
-        <div className="relative h-[500px]">
+        <div className="relative h-[500px] md:h-full min-h-[500px]">
 
           <Image
-            src={product.image}
+            src={product.images[0]}
             alt={product.title}
             fill
+            sizes="100vw"
             className="object-cover"
           />
 
@@ -43,40 +47,39 @@ export default function QuickViewModal({
         {/* CONTENT */}
         <div className="p-10 flex flex-col justify-center">
 
-          <p className="text-gray-400 uppercase tracking-[4px] mb-4">
+          <p className="text-gray-400 uppercase tracking-[5px] mb-4">
+
             Quick View
+
           </p>
 
-          <h2 className="text-5xl font-bold mb-6">
+          <h1 className="text-6xl font-bold text-white mb-6">
+
             {product.title}
-          </h2>
 
-          <p className="text-3xl font-semibold mb-8">
+          </h1>
+
+          <p className="text-4xl font-semibold text-white mb-8">
+
             {product.price}
+
           </p>
 
-          <p className="text-gray-300 leading-relaxed mb-8">
+          <p className="text-gray-300 text-lg leading-relaxed mb-10">
 
             Premium streetwear designed for comfort, elegance, and modern fashion lovers.
 
           </p>
 
-          <button className="bg-white text-black px-8 py-4 rounded-full font-semibold hover:bg-gray-200 transition mb-4">
+          <button className="bg-white text-black py-5 rounded-full text-lg font-semibold hover:bg-gray-200 transition">
 
             Add To Cart
 
           </button>
 
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-white transition"
-          >
-            Close
-          </button>
-
         </div>
 
-      </motion.div>
+      </div>
 
     </div>
   );

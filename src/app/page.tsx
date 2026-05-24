@@ -2,203 +2,226 @@
 
 import { useState } from "react";
 
-import { motion } from "framer-motion";
-
-import Navbar from "@/components/layout/Navbar";
+import { products } from "@/data/products";
 
 import ProductCard from "@/components/products/ProductCard";
 
 import QuickViewModal from "@/components/products/QuickViewModal";
 
-import { products } from "@/data/products";
-
-export default function Home() {
-
-  const [search, setSearch] = useState("");
-
-  const [selectedCategory, setSelectedCategory] =
-    useState("All");
+export default function HomePage() {
 
   const [selectedProduct, setSelectedProduct] =
     useState<any>(null);
 
-  const filteredProducts = products.filter((product) => {
+  const [searchTerm, setSearchTerm] =
+    useState("");
 
-    const matchesSearch = product.title
-      .toLowerCase()
-      .includes(search.toLowerCase());
+  const [selectedCategory, setSelectedCategory] =
+    useState("All");
 
-    const matchesCategory =
-      selectedCategory === "All" ||
-      product.category === selectedCategory;
+  const [sortOption, setSortOption] =
+    useState("default");
 
-    return matchesSearch && matchesCategory;
-  });
+  const filteredProducts =
+    products
+      .filter((product) => {
+
+        const matchesSearch =
+          product.title
+            .toLowerCase()
+            .includes(
+              searchTerm.toLowerCase()
+            );
+
+        const matchesCategory =
+          selectedCategory === "All"
+            ? true
+            : product.category ===
+              selectedCategory;
+
+        return (
+          matchesSearch &&
+          matchesCategory
+        );
+
+      })
+      .sort((a, b) => {
+
+        const priceA =
+          Number(
+            a.price.replace("$", "")
+          );
+
+        const priceB =
+          Number(
+            b.price.replace("$", "")
+          );
+
+        if (
+          sortOption === "low-high"
+        ) {
+
+          return priceA - priceB;
+
+        }
+
+        if (
+          sortOption === "high-low"
+        ) {
+
+          return priceB - priceA;
+
+        }
+
+        return 0;
+
+      });
 
   return (
     <main className="min-h-screen bg-black text-white">
 
-      <Navbar />
+      {/* HERO */}
+      <section className="h-[60vh] flex flex-col items-center justify-center text-center px-4 md:px-8">
 
-      {/* HERO SECTION */}
-      <motion.section
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="flex flex-col items-center justify-center h-screen text-center px-4"
-      >
+        <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
 
-        <h1 className="text-5xl md:text-7xl font-bold mb-6">
-          Fashion Store
+          Premium Fashion
+
         </h1>
 
-        <p className="text-lg md:text-2xl text-gray-300 max-w-2xl mb-8">
-          Discover modern fashion collections with premium style and comfort.
+        <p className="text-lg md:text-2xl text-gray-400 max-w-3xl">
+
+          Discover premium streetwear collections
+          with modern style and comfort.
+
         </p>
 
-        <button className="bg-white text-black px-6 py-3 rounded-full font-semibold hover:bg-gray-200 transition">
+      </section>
 
-          Shop Now
+      {/* SEARCH */}
+      <div className="px-4 md:px-8 mb-8">
 
-        </button>
-
-      </motion.section>
-
-      {/* PREMIUM BANNER */}
-      <motion.section
-        initial={{ opacity: 0, scale: 0.95 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8 }}
-        className="relative h-screen mx-6 rounded-[40px] overflow-hidden mb-24"
-      >
-
-        {/* BACKGROUND IMAGE */}
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage:
-              "url('/images/hoodie.jpg')",
-          }}
+        <input
+          type="text"
+          placeholder="Search products..."
+          value={searchTerm}
+          onChange={(e) =>
+            setSearchTerm(
+              e.target.value
+            )
+          }
+          className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-5 md:px-6 py-4 md:py-5 text-base md:text-lg outline-none"
         />
 
-        {/* DARK OVERLAY */}
-        <div className="absolute inset-0 bg-black/60" />
+      </div>
 
-        {/* CONTENT */}
-        <div className="relative z-10 h-full flex flex-col justify-center px-12">
+      {/* FILTER + SORT */}
+      <div className="px-4 md:px-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-12 md:mb-14">
 
-          <p className="text-gray-300 text-lg mb-4 uppercase tracking-[6px]">
+        {/* CATEGORY FILTERS */}
+        <div className="flex flex-wrap gap-3 md:gap-4">
 
-            New Collection
+          {[
+            "All",
+            "Hoodies",
+            "T-Shirts",
+            "Shoes",
+          ].map((category) => (
 
-          </p>
+            <button
+              key={category}
+              onClick={() =>
+                setSelectedCategory(
+                  category
+                )
+              }
+              className={`px-5 md:px-8 py-3 md:py-4 rounded-full text-sm md:text-lg transition ${
+                selectedCategory ===
+                category
+                  ? "bg-white text-black"
+                  : "bg-zinc-900 text-white"
+              }`}
+            >
 
-          <h2 className="text-6xl md:text-8xl font-bold max-w-4xl leading-tight mb-6">
+              {category}
 
-            Elevate Your
-            Streetwear Style
+            </button>
 
-          </h2>
-
-          <p className="text-gray-300 text-xl max-w-2xl mb-8">
-
-            Discover premium oversized fashion inspired by modern urban culture.
-
-          </p>
-
-          <button className="bg-white text-black px-8 py-4 rounded-full w-fit font-semibold hover:bg-gray-200 transition">
-
-            Explore Collection
-
-          </button>
+          ))}
 
         </div>
 
-      </motion.section>
+        {/* SORT */}
+        <select
+          value={sortOption}
+          onChange={(e) =>
+            setSortOption(
+              e.target.value
+            )
+          }
+          className="bg-zinc-900 border border-zinc-800 rounded-2xl px-5 md:px-6 py-3 md:py-4 text-sm md:text-lg outline-none"
+        >
 
-      {/* PRODUCT SECTION */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-        className="max-w-7xl mx-auto px-6 py-20"
-      >
+          <option value="default">
 
-        <h2 className="text-4xl font-bold mb-12 text-center">
+            Default Sorting
+
+          </option>
+
+          <option value="low-high">
+
+            Price: Low to High
+
+          </option>
+
+          <option value="high-low">
+
+            Price: High to Low
+
+          </option>
+
+        </select>
+
+      </div>
+
+      {/* PRODUCTS */}
+      <section className="px-4 md:px-8 pb-12 md:pb-20">
+
+        <h2 className="text-3xl md:text-5xl font-bold mb-10 md:mb-12">
 
           Featured Products
 
         </h2>
 
-        {/* SEARCH BAR */}
-        <div className="mb-10 flex justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
 
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="bg-zinc-900 border border-zinc-700 px-6 py-4 rounded-2xl w-full max-w-xl outline-none"
-          />
+          {filteredProducts.length === 0 ? (
 
-        </div>
+            <div className="col-span-full flex flex-col items-center justify-center py-20 md:py-32 text-center">
 
-        {/* MAIN LAYOUT */}
-        <div className="grid lg:grid-cols-4 gap-10">
+              <h3 className="text-3xl md:text-4xl font-bold mb-4">
 
-          {/* SIDEBAR */}
-          <div className="bg-zinc-900 p-6 rounded-3xl h-fit">
+                No Products Found
 
-            <h3 className="text-2xl font-bold mb-6">
+              </h3>
 
-              Categories
+              <p className="text-gray-400 text-lg md:text-xl">
 
-            </h3>
+                Try another search or category.
 
-            <div className="flex flex-col gap-4">
-
-              {["All", "Hoodies", "Jackets", "T-Shirts"].map(
-                (category) => (
-
-                  <button
-                    key={category}
-                    onClick={() =>
-                      setSelectedCategory(category)
-                    }
-                    className={`text-left px-4 py-3 rounded-xl transition ${
-                      selectedCategory === category
-                        ? "bg-white text-black"
-                        : "bg-zinc-800 hover:bg-zinc-700"
-                    }`}
-                  >
-
-                    {category}
-
-                  </button>
-
-                )
-              )}
+              </p>
 
             </div>
 
-          </div>
+          ) : (
 
-          {/* PRODUCTS */}
-          <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-8">
+            filteredProducts.map(
+              (product) => (
 
-            {filteredProducts.map((product, index) => (
-
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.5,
-                  delay: index * 0.2,
-                }}
-              >
-
-                <div className="relative">
+                <div
+                  key={product.id}
+                  className="group relative"
+                >
 
                   <ProductCard
                     id={product.id}
@@ -207,12 +230,14 @@ export default function Home() {
                     image={product.images[0]}
                   />
 
-                  {/* QUICK VIEW BUTTON */}
+                  {/* QUICK VIEW */}
                   <button
                     onClick={() =>
-                      setSelectedProduct(product)
+                      setSelectedProduct(
+                        product
+                      )
                     }
-                    className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white text-black px-6 py-3 rounded-full font-semibold hover:bg-gray-200 transition"
+                    className="absolute bottom-16 md:bottom-20 left-1/2 -translate-x-1/2 bg-white text-black px-5 md:px-6 py-2 md:py-3 rounded-full text-sm md:text-base font-semibold opacity-0 group-hover:opacity-100 transition duration-300 z-30"
                   >
 
                     Quick View
@@ -221,17 +246,16 @@ export default function Home() {
 
                 </div>
 
-              </motion.div>
+              )
+            )
 
-            ))}
-
-          </div>
+          )}
 
         </div>
 
-      </motion.section>
+      </section>
 
-      {/* QUICK VIEW MODAL */}
+      {/* MODAL */}
       {selectedProduct && (
 
         <QuickViewModal

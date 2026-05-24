@@ -1,45 +1,150 @@
+"use client";
+
+import { useState } from "react";
+
+import Link from "next/link";
+
+import toast from "react-hot-toast";
+
 export default function LoginPage() {
+
+  const [email, setEmail] =
+    useState("");
+
+  const [password, setPassword] =
+    useState("");
+
+  const handleLogin = () => {
+
+    // EMPTY CHECK
+    if (!email || !password) {
+
+      toast.error(
+        "Please fill all fields"
+      );
+
+      return;
+    }
+
+    // EMAIL VALIDATION
+    const emailRegex =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (
+      !emailRegex.test(email)
+    ) {
+
+      toast.error(
+        "Enter valid email"
+      );
+
+      return;
+    }
+
+    // PASSWORD LENGTH
+    if (
+      password.length < 6
+    ) {
+
+      toast.error(
+        "Password must be at least 6 characters"
+      );
+
+      return;
+    }
+
+    // SUCCESS
+    toast.success(
+      "Login Successful"
+    );
+
+    window.location.href = "/";
+  };
+
   return (
-    <main className="min-h-screen bg-black text-white flex items-center justify-center px-6">
+    <main className="min-h-screen bg-black text-white flex items-center justify-center px-4 py-12">
 
-      <div className="bg-zinc-900 p-10 rounded-3xl w-full max-w-md">
+      <div className="w-full max-w-xl bg-zinc-950 border border-zinc-800 rounded-[40px] p-8 md:p-12">
 
-        <h1 className="text-4xl font-bold mb-8 text-center">
-          Login
+        <h1 className="text-4xl md:text-6xl font-bold mb-10 text-center">
+
+          Welcome Back
+
         </h1>
 
-        <form className="flex flex-col gap-5">
+        <div className="space-y-6">
 
-          <input
-            type="email"
-            placeholder="Email"
-            className="bg-zinc-800 px-5 py-4 rounded-xl outline-none"
-          />
+          {/* EMAIL */}
+          <div>
 
-          <input
-            type="password"
-            placeholder="Password"
-            className="bg-zinc-800 px-5 py-4 rounded-xl outline-none"
-          />
+            <label className="block mb-3 text-lg text-gray-300">
 
+              Email Address
+
+            </label>
+
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) =>
+                setEmail(
+                  e.target.value
+                )
+              }
+              className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-6 py-5 text-lg outline-none"
+            />
+
+          </div>
+
+          {/* PASSWORD */}
+          <div>
+
+            <label className="block mb-3 text-lg text-gray-300">
+
+              Password
+
+            </label>
+
+            <input
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) =>
+                setPassword(
+                  e.target.value
+                )
+              }
+              className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-6 py-5 text-lg outline-none"
+            />
+
+          </div>
+
+          {/* LOGIN BUTTON */}
           <button
-            className="bg-white text-black py-4 rounded-xl font-semibold hover:bg-gray-200 transition"
+            onClick={handleLogin}
+            className="w-full bg-white text-black py-5 rounded-full text-xl font-semibold hover:bg-gray-200 transition"
           >
+
             Login
+
           </button>
 
-        </form>
+        </div>
 
-        <p className="text-gray-400 text-center mt-6">
+        {/* REGISTER LINK */}
+        <p className="text-center text-gray-400 mt-8 text-lg">
 
-          Don’t have an account?{" "}
+          Don&apos;t have an account?{" "}
 
-          <a
+          <Link
             href="/register"
-            className="text-white hover:underline"
+            className="text-white font-semibold hover:underline"
           >
+
             Register
-          </a>
+
+          </Link>
 
         </p>
 

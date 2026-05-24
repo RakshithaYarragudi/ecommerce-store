@@ -1,4 +1,5 @@
 export const products = [
+
   {
     id: "oversized-hoodie",
 
@@ -9,25 +10,25 @@ export const products = [
     category: "Hoodies",
 
     images: [
-      "/images/hoodie.jpg",
-      "/images/hoodie.jpg",
-      "/images/hoodie.jpg",
+      "https://images.unsplash.com/photo-1578587018452-892bacefd3f2?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1200&auto=format&fit=crop",
     ],
+  },
 
-    rating: 4.8,
+  {
+    id: "urban-tshirt",
 
-    reviews: [
-      {
-        user: "Alex",
-        comment:
-          "Amazing oversized fit and premium quality.",
-      },
+    title: "Urban T-Shirt",
 
-      {
-        user: "Sophia",
-        comment:
-          "Very comfortable and stylish streetwear.",
-      },
+    price: "$39",
+
+    category: "T-Shirts",
+
+    images: [
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1503341504253-dff4815485f1?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1200&auto=format&fit=crop",
     ],
   },
 
@@ -38,60 +39,61 @@ export const products = [
 
     price: "$89",
 
-    category: "Jackets",
+    category: "Hoodies",
 
     images: [
-      "/images/jacket.jpg",
-      "/images/jacket.jpg",
-      "/images/jacket.jpg",
-    ],
-
-    rating: 4.6,
-
-    reviews: [
-      {
-        user: "Daniel",
-        comment:
-          "Luxury feel and perfect winter jacket.",
-      },
-
-      {
-        user: "Emma",
-        comment:
-          "Looks extremely premium in person.",
-      },
+      "https://images.unsplash.com/photo-1548883354-94bcfe321cbb?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1523398002811-999ca8dec234?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1200&auto=format&fit=crop",
     ],
   },
 
   {
-    id: "urban-t-shirt",
+    id: "premium-shoes",
 
-    title: "Urban T-Shirt",
+    title: "Premium Shoes",
 
-    price: "$39",
+    price: "$129",
 
-    category: "T-Shirts",
+    category: "Shoes",
 
     images: [
-      "/images/tshirt.jpg",
-      "/images/tshirt.jpg",
-      "/images/tshirt.jpg",
-    ],
-
-    rating: 4.7,
-
-    reviews: [
-      {
-        user: "Chris",
-        comment:
-          "Minimal and modern design. Love it.",
-      },
-
-      {
-        user: "Olivia",
-        comment:
-          "Soft fabric and perfect oversized fit.",
-      },
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1608231387042-66d1773070a5?q=80&w=1200&auto=format&fit=crop",
     ],
   },
+
+  {
+    id: "streetwear-hoodie",
+
+    title: "Streetwear Hoodie",
+
+    price: "$69",
+
+    category: "Hoodies",
+
+    images: [
+      "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1200&auto=format&fit=crop",
+    ],
+  },
+
+  {
+    id: "minimal-sneakers",
+
+    title: "Minimal Sneakers",
+
+    price: "$149",
+
+    category: "Shoes",
+
+    images: [
+      "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1605348532760-6753d2c43329?q=80&w=1200&auto=format&fit=crop",
+    ],
+  },
+
 ];
