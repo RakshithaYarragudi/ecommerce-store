@@ -1,63 +1,140 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
+
 import Link from "next/link";
+import Image from "next/image";
+
+import { motion } from "framer-motion";
+
+import { Heart } from "lucide-react";
+
+import { useWishlistStore } from "@/store/wishlistStore";
 
 type ProductCardProps = {
+  id: string;
   title: string;
   price: string;
   image: string;
 };
 
 export default function ProductCard({
+  id,
   title,
   price,
   image,
 }: ProductCardProps) {
 
-  const slug = title.toLowerCase().replace(/\s+/g, "-");
+  const [mounted, setMounted] =
+    useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const toggleWishlist =
+    useWishlistStore(
+      (state) => state.toggleWishlist
+    );
+
+  const wishlist =
+    useWishlistStore(
+      (state) => state.wishlist
+    );
+
+  const isInWishlist =
+    wishlist.some(
+      (item) => item.id === id
+    );
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
-    <Link href={`/products/${slug}`}>
+    <div className="relative">
 
-      <div className="bg-zinc-900 rounded-2xl overflow-hidden hover:scale-105 transition duration-300 group cursor-pointer">
+      {/* HEART BUTTON */}
+      <button
+        onClick={() =>
+          toggleWishlist({
+            id,
+            title,
+            price,
+            image,
+          })
+        }
+        className="absolute top-5 right-5 z-20 bg-black/60 p-3 rounded-full backdrop-blur-md"
+      >
 
-        <div className="relative h-72 overflow-hidden">
+        <Heart
+          size={24}
+          className={`transition ${
+            isInWishlist
+              ? "fill-red-500 text-red-500"
+              : "text-white"
+          }`}
+        />
 
-          <Image
-            src={image}
-            alt={title}
-            fill
-            sizes="(max-width: 768px) 100vw, 33vw"
-            className="object-cover group-hover:scale-110 transition duration-500"
-          />
+      </button>
 
-        </div>
+      <Link href={`/products/${id}`}>
 
-        <div className="p-5">
+        <motion.div
+          whileHover={{
+            y: -15,
+            scale: 1.03,
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 250,
+          }}
+          className="bg-zinc-900 rounded-3xl overflow-hidden cursor-pointer border border-zinc-800 hover:border-white"
+        >
 
-          <h3 className="text-xl font-semibold mb-2">
-            {title}
-          </h3>
+          {/* IMAGE */}
+          <div className="relative h-[400px] overflow-hidden">
 
-          <p className="text-gray-400 mb-4">
-            Premium fashion wear
-          </p>
+            <motion.div
+              whileHover={{
+                scale: 1.1,
+              }}
+              transition={{
+                duration: 0.4,
+              }}
+              className="relative w-full h-full"
+            >
 
-          <div className="flex items-center justify-between">
+              <Image
+                src={image}
+                alt={title}
+                fill
+                loading="eager"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover"
+              />
 
-            <span className="text-lg font-bold">
-              {price}
-            </span>
-
-            <button className="bg-white text-black px-4 py-2 rounded-full hover:bg-gray-200 transition">
-              Buy
-            </button>
+            </motion.div>
 
           </div>
 
-        </div>
+          {/* CONTENT */}
+          <div className="p-6">
 
-      </div>
+            <h2 className="text-2xl font-bold mb-3">
+              {title}
+            </h2>
 
-    </Link>
+            <p className="text-gray-400 text-lg">
+              {price}
+            </p>
+
+          </div>
+
+        </motion.div>
+
+      </Link>
+
+    </div>
   );
 }

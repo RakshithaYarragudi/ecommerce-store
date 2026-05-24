@@ -1,32 +1,90 @@
+"use client";
+
+import Link from "next/link";
+
+import { ShoppingCart, Heart } from "lucide-react";
+
+import { useCartStore } from "@/store/cartStore";
+
+import { useWishlistStore } from "@/store/wishlistStore";
+
 export default function Navbar() {
+
+  const cart =
+    useCartStore(
+      (state) => state.cart
+    );
+
+  const wishlist =
+    useWishlistStore(
+      (state) => state.wishlist
+    );
+
+  const totalCartItems =
+    cart.reduce(
+      (total, item) =>
+        total + item.quantity,
+      0
+    );
+
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-gray-800">
+    <nav className="flex items-center justify-between px-8 py-6 border-b border-zinc-800 bg-black sticky top-0 z-50">
 
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+      {/* LOGO */}
+      <Link
+        href="/"
+        className="text-3xl font-bold"
+      >
+        FASHION
+      </Link>
 
-        <h1 className="text-2xl font-bold tracking-wide">
-          FASHION
-        </h1>
+      {/* LINKS */}
+      <div className="flex items-center gap-8 text-lg">
 
-        <div className="flex items-center gap-6 text-sm md:text-base">
+        <Link
+          href="/"
+          className="hover:text-gray-300 transition"
+        >
+          Home
+        </Link>
 
-          <button className="hover:text-gray-300 transition">
-            Home
-          </button>
+        <Link
+          href="/wishlist"
+          className="relative hover:text-gray-300 transition"
+        >
 
-          <button className="hover:text-gray-300 transition">
-            Products
-          </button>
+          <Heart size={28} />
 
-          <button className="hover:text-gray-300 transition">
-            Cart
-          </button>
+          {wishlist.length > 0 && (
 
-          <button className="bg-white text-black px-4 py-2 rounded-full hover:bg-gray-200 transition">
-            Login
-          </button>
+            <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
 
-        </div>
+              {wishlist.length}
+
+            </span>
+
+          )}
+
+        </Link>
+
+        <Link
+          href="/cart"
+          className="relative hover:text-gray-300 transition"
+        >
+
+          <ShoppingCart size={28} />
+
+          {totalCartItems > 0 && (
+
+            <span className="absolute -top-2 -right-3 bg-white text-black text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+
+              {totalCartItems}
+
+            </span>
+
+          )}
+
+        </Link>
 
       </div>
 
