@@ -14,7 +14,7 @@ export default function LoginPage() {
   const [password, setPassword] =
     useState("");
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
 
     // EMPTY CHECK
     if (!email || !password) {
@@ -53,12 +53,53 @@ export default function LoginPage() {
       return;
     }
 
-    // SUCCESS
-    toast.success(
-      "Login Successful"
-    );
+    try {
 
-    window.location.href = "/";
+      const response =
+        await fetch(
+          "/api/login",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+
+            body: JSON.stringify({
+              email,
+              password,
+            }),
+          }
+        );
+
+      const data =
+        await response.json();
+
+      if (!data.success) {
+
+        toast.error(
+          data.message
+        );
+
+        return;
+      }
+
+      toast.success(
+        "Login Successful"
+      );
+
+      window.location.href =
+        "/account";
+
+    } catch (error) {
+
+      toast.error(
+        "Something went wrong"
+      );
+
+    }
+
   };
 
   return (

@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
 import Link from "next/link";
-
 import toast from "react-hot-toast";
 
 export default function RegisterPage() {
@@ -20,7 +18,7 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] =
     useState("");
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
 
     // EMPTY CHECK
     if (
@@ -89,13 +87,54 @@ export default function RegisterPage() {
       return;
     }
 
-    // SUCCESS
-    toast.success(
-      "Registration Successful"
-    );
+    try {
 
-    window.location.href =
-      "/login";
+      const response =
+        await fetch(
+          "/api/register",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+
+            body: JSON.stringify({
+              name: fullName,
+              email,
+              password,
+            }),
+          }
+        );
+
+      const data =
+        await response.json();
+
+      if (!data.success) {
+
+        toast.error(
+          data.message
+        );
+
+        return;
+      }
+
+      toast.success(
+        "Account created successfully"
+      );
+
+      window.location.href =
+        "/login";
+
+    } catch (error) {
+
+      toast.error(
+        "Something went wrong"
+      );
+
+    }
+
   };
 
   return (
@@ -111,7 +150,6 @@ export default function RegisterPage() {
 
         <div className="space-y-6">
 
-          {/* FULL NAME */}
           <div>
 
             <label className="block mb-3 text-lg text-gray-300">
@@ -134,7 +172,6 @@ export default function RegisterPage() {
 
           </div>
 
-          {/* EMAIL */}
           <div>
 
             <label className="block mb-3 text-lg text-gray-300">
@@ -157,7 +194,6 @@ export default function RegisterPage() {
 
           </div>
 
-          {/* PASSWORD */}
           <div>
 
             <label className="block mb-3 text-lg text-gray-300">
@@ -180,7 +216,6 @@ export default function RegisterPage() {
 
           </div>
 
-          {/* CONFIRM PASSWORD */}
           <div>
 
             <label className="block mb-3 text-lg text-gray-300">
@@ -203,7 +238,6 @@ export default function RegisterPage() {
 
           </div>
 
-          {/* REGISTER BUTTON */}
           <button
             onClick={handleRegister}
             className="w-full bg-white text-black py-5 rounded-full text-xl font-semibold hover:bg-gray-200 transition"
@@ -215,7 +249,6 @@ export default function RegisterPage() {
 
         </div>
 
-        {/* LOGIN LINK */}
         <p className="text-center text-gray-400 mt-8 text-lg">
 
           Already have an account?{" "}
